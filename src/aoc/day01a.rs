@@ -1,8 +1,8 @@
 use std::path::Path;
 use crate::aoc::file;
 
-fn solve() -> i32 {
-    solve_file (Path::new("../../resources/input/input01.txt"))
+pub(crate) fn solve() -> i32 {
+    solve_file (&file::input("input01.txt"))
 }
 
 fn solve_file(f:&Path) -> i32{

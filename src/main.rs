@@ -1,7 +1,8 @@
-use std::path::Path;
 
 mod aoc;
 
 fn main() {
-    let _bla = aoc::file::read_lines( Path::new("bla.txt"));
+
+    let _result01a = aoc::day01a::solve();
+    let _result01b = aoc::day01b::solve();
 }

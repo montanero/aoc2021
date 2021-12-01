@@ -1,12 +1,19 @@
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub fn read_lines(filename: &Path) -> io::Result<io::Lines<io::BufReader<File>>> {
     let file = File::open(filename)?;
     let lines = io::BufReader::new(file).lines();
     Ok(lines)
+}
+
+pub fn input(filename: &str) -> PathBuf {
+    let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    d.push("resources/input");
+    d.push(filename);
+    d
 }
 
 
@@ -20,7 +27,7 @@ mod tests {
 
     fn test_file(filename: &str) -> PathBuf {
         let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        d.push("../../resources/test");
+        d.push("resources/test");
         d.push(filename);
         d
     }

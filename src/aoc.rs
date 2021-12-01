@@ -1,3 +1,3 @@
  pub mod file;
- mod day01a;
- mod day01b;
+ pub(crate) mod day01a;
+ pub(crate) mod day01b;
