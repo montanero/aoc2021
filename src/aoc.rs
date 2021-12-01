@@ -1,2 +1,3 @@
  pub mod file;
- mod input01;
+ mod day01a;
+ mod day01b;

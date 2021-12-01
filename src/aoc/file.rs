@@ -20,7 +20,7 @@ mod tests {
 
     fn test_file(filename: &str) -> PathBuf {
         let mut d = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        d.push("resources/test");
+        d.push("../../resources/test");
         d.push(filename);
         d
     }
