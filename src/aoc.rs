@@ -3,3 +3,5 @@
  pub(crate) mod day01b;
  pub(crate) mod day02a;
  pub(crate) mod day02b;
+ pub(crate) mod day03a;
+ pub(crate) mod day03b;
