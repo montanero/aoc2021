@@ -25,7 +25,7 @@ fn read_input(f: &Path) -> Vec<i32> {
         let line = line.unwrap();
         let number: i32 = i32::from_str_radix(&line, 2).unwrap();
         numbers.push(number);
-    };
+    }
     numbers
 }
 
@@ -37,7 +37,7 @@ fn get_frequencies(numbers: &Vec<i32>) -> Vec<i32> {
             if (num & mask) != 0 {
                 let count: i32 = match freq_1bits.get(bit) {
                     Some(x) => x + 1,
-                    None => 1
+                    None => 1,
                 };
                 freq_1bits[bit] = count;
             }
@@ -52,7 +52,11 @@ fn get_oxygen(numbers: &Vec<i32>, nbits: usize) -> i32 {
         if rest.len() > 1 {
             let freq_1bits: Vec<i32> = get_frequencies(&rest);
             let freq = freq_1bits[bit];
-            let most_common = if freq * 2 >= (rest.len()) as i32 { 1 } else { 0 };
+            let most_common = if freq * 2 >= (rest.len()) as i32 {
+                1
+            } else {
+                0
+            };
             let mask = 1 << bit;
             let compare_mask = if most_common == 1 { mask } else { 0 };
             let mut new_rest = vec![];
@@ -73,7 +77,11 @@ fn get_co2(numbers: &Vec<i32>, nbits: usize) -> i32 {
         if rest.len() > 1 {
             let freq_1bits: Vec<i32> = get_frequencies(&rest);
             let freq = freq_1bits[bit];
-            let least_common = if freq * 2 >= (rest.len()) as i32 { 0 } else { 1 };
+            let least_common = if freq * 2 >= (rest.len()) as i32 {
+                0
+            } else {
+                1
+            };
             let mask = 1 << bit;
             let keep_mask = if least_common == 0 { 0 } else { mask };
             let mut new_rest = vec![];
@@ -87,7 +95,6 @@ fn get_co2(numbers: &Vec<i32>, nbits: usize) -> i32 {
     }
     rest[0]
 }
-
 
 #[cfg(test)]
 mod test {
