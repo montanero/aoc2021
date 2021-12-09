@@ -1,8 +1,5 @@
 use std::path::Path;
 
-use lazy_static::lazy_static;
-use regex::Regex;
-
 use crate::aoc::file;
 
 pub(crate) fn solve() -> u32 {
@@ -27,7 +24,7 @@ fn solve_file(f: &Path) -> u32 {
 }
 
 fn raise_basin(a: &mut Vec<Vec<i8>>, x: usize, y: usize) -> u32 {
-    if (!is_deep(a, x, y)) {
+    if !is_deep_or_flat(a, x, y) {
         0
     } else {
         a[y][x] = 9;
@@ -74,6 +71,22 @@ fn is_deep(a: &Vec<Vec<i8>>, x: usize, y: usize) -> bool {
         })
 }
 
+fn is_deep_or_flat(a: &Vec<Vec<i8>>, x: usize, y: usize) -> bool {
+    a[y][x] < 9
+        && (if x > 0 { a[y][x] <= a[y][x - 1] } else { true })
+        && (if y > 0 { a[y][x] <= a[y - 1][x] } else { true })
+        && (if x < a[y].len() - 1 {
+            a[y][x] <= a[y][x + 1]
+        } else {
+            true
+        })
+        && (if y < a.len() - 1 {
+            a[y][x] <= a[y + 1][x]
+        } else {
+            true
+        })
+}
+
 fn read_file(p0: &Path) -> Vec<Vec<i8>> {
     let input = file::read_lines(p0).unwrap();
     input.map(|l| parse_line(&l.expect("fail"))).collect()
@@ -93,7 +106,7 @@ mod test {
     fn result() {
         let result = solve();
         println!("result : {}", result);
-        assert_eq!(result, 521); // 282880 too low
+        assert_eq!(result, 1056330); // 282880 too low
     }
 
     #[test]

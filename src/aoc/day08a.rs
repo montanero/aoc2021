@@ -1,8 +1,5 @@
 use std::path::Path;
 
-use lazy_static::lazy_static;
-use regex::Regex;
-
 use crate::aoc::file;
 
 pub(crate) fn solve() -> i32 {

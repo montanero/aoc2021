@@ -177,6 +177,6 @@ mod test {
     fn result() {
         let result = solve();
         println!("result : {}", result);
-        assert_eq!(result, 87456);
+        assert_eq!(result, 15561);
     }
 }

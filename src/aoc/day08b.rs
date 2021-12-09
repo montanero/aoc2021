@@ -2,8 +2,6 @@ use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
 use itertools::Itertools;
-use lazy_static::lazy_static;
-use regex::Regex;
 
 use crate::aoc::file;
 

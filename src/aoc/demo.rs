@@ -1,7 +1,6 @@
-use std::str::FromStr;
-
 use lazy_static::lazy_static;
 use regex::Regex;
+use std::str::FromStr;
 
 pub fn split_line(line: &str) -> Vec<i32> {
     lazy_static! {
@@ -46,7 +45,7 @@ mod test {
     }
 
     #[test]
-    fn two_numbers () {
+    fn two_numbers() {
         let v = split_line(" 1 2");
         assert_eq!(v.len(), 2);
         assert_eq!(v[0], 1);
@@ -54,7 +53,7 @@ mod test {
     }
 
     #[test]
-    fn two_numbers_with_spaces () {
+    fn two_numbers_with_spaces() {
         let v = split_line("   3 42  ");
         assert_eq!(v.len(), 2);
         assert_eq!(v[0], 3);

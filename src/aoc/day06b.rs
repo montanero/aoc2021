@@ -12,7 +12,7 @@ pub(crate) fn solve() -> u64 {
 fn solve_file(f: &Path) -> u64 {
     let fishes = read_input(f);
     let mut counts = cout_fish_ages(fishes);
-    for i in 0..256 {
+    for _ in 0..256 {
         counts = generation(counts)
     }
     count_fishes(&counts)
@@ -45,7 +45,7 @@ fn generation(ages: Vec<u64>) -> Vec<u64> {
 }
 
 fn read_input(f: &Path) -> Vec<i32> {
-    let mut lines: Vec<String> = read_lines(f);
+    let lines: Vec<String> = read_lines(f);
     let draws = read_number_line(&lines[0]);
     draws
 }
@@ -85,15 +85,15 @@ mod test {
     fn result() {
         let result = solve();
         println!("result : {}", result);
-        assert_eq!(result, 87456);
+        assert_eq!(result, 1721148811504);
     }
 
     #[test]
     fn sample() {
-        let f = (&file::input("input06-sample.txt"));
+        let f = &file::input("input06-sample.txt");
         let fishes = read_input(f);
         let mut counts = cout_fish_ages(fishes);
-        for i in 0..18 {
+        for _ in 0..18 {
             counts = generation(counts)
         }
         let c = count_fishes(&counts);

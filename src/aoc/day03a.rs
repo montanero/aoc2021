@@ -1,5 +1,6 @@
-use crate::aoc::file;
 use std::path::Path;
+
+use crate::aoc::file;
 
 pub(crate) fn solve() -> i32 {
     solve_file(&file::input("input03.txt"))

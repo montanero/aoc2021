@@ -1,9 +1,10 @@
 use std::cmp::{max, min};
 use std::path::Path;
 
-use crate::aoc::file;
 use lazy_static::lazy_static;
 use regex::Regex;
+
+use crate::aoc::file;
 
 pub(crate) fn solve() -> i32 {
     solve_file(&file::input("input05.txt"))
@@ -11,7 +12,7 @@ pub(crate) fn solve() -> i32 {
 
 fn solve_file(f: &Path) -> i32 {
     let numbers = read_input(f);
-    let f = drawLines(&numbers);
+    let f = draw_lines(&numbers);
     count_doubles(&f)
 }
 
@@ -63,9 +64,9 @@ fn read_line(str: &str) -> Line {
     }
 }
 
-fn drawLines(lines: &Vec<Line>) -> Vec<Vec<i32>> {
-    let SIZE = 1000;
-    let mut field = empty_field(SIZE);
+fn draw_lines(lines: &Vec<Line>) -> Vec<Vec<i32>> {
+    let size = 1000;
+    let mut field = empty_field(size);
     for line in lines {
         draw_line(&mut field, line);
     }
@@ -73,13 +74,13 @@ fn drawLines(lines: &Vec<Line>) -> Vec<Vec<i32>> {
 }
 
 fn draw_line(field: &mut Vec<Vec<i32>>, line: &Line) {
-    if (line.start.x == line.end.x) {
+    if line.start.x == line.end.x {
         let ymin = min(line.start.y, line.end.y) as usize;
         let ymax = max(line.start.y, line.end.y) as usize;
         for y in ymin..ymax + 1 {
             field[y][line.start.x as usize] = field[y][line.start.x as usize] + 1;
         }
-    } else if (line.start.y == line.end.y) {
+    } else if line.start.y == line.end.y {
         let xmin = min(line.start.x, line.end.x) as usize;
         let xmax = max(line.start.x, line.end.x) as usize;
         for x in xmin..xmax + 1 {
@@ -90,7 +91,7 @@ fn draw_line(field: &mut Vec<Vec<i32>>, line: &Line) {
 
 fn empty_field(size: i32) -> Vec<Vec<i32>> {
     let mut field = Vec::new();
-    for i in 0..size {
+    for _ in 0..size {
         field.push(vec![0; size as usize])
     }
     field
@@ -100,7 +101,7 @@ fn count_doubles(field: &Vec<Vec<i32>>) -> i32 {
     let mut count = 0;
     for line in field {
         for place in line {
-            if (*place > 1) {
+            if *place > 1 {
                 count = count + 1;
             }
         }
@@ -123,7 +124,7 @@ mod test {
     fn sample() {
         let f = &file::input("input05-sample.txt");
         let numbers = read_input(f);
-        let f = drawLines(&numbers);
+        let f = draw_lines(&numbers);
         let doubles = count_doubles(&f);
         assert_eq!(doubles, 5);
     }

@@ -14,12 +14,10 @@ fn solve_file(f: &Path) -> i32 {
     let min = positions.iter().min().unwrap().clone();
     let max = positions.iter().max().unwrap().clone();
     let mut min_fuel = i32::MAX;
-    let mut min_pos = -1;
     for pos in min..max + 1 {
         let fuel = calculate_fuel(&positions, pos);
         if fuel < min_fuel {
             min_fuel = fuel;
-            min_pos = pos;
         }
     }
     min_fuel
@@ -37,7 +35,7 @@ fn get_fuel(pos: i32, p: &i32) -> i32 {
 }
 
 fn read_input(f: &Path) -> Vec<i32> {
-    let mut lines: Vec<String> = read_lines(f);
+    let lines: Vec<String> = read_lines(f);
     let draws = read_number_line(&lines[0]);
     draws
 }

@@ -1,8 +1,5 @@
 use std::path::Path;
 
-use lazy_static::lazy_static;
-use regex::Regex;
-
 use crate::aoc::file;
 
 pub(crate) fn solve() -> i32 {
@@ -55,6 +52,6 @@ mod test {
     fn result() {
         let result = solve();
         println!("result : {}", result);
-        assert_eq!(result, 521);
+        assert_eq!(result, 489);
     }
 }
