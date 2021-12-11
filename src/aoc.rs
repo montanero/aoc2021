@@ -18,4 +18,6 @@ pub(crate) mod day09a;
 pub(crate) mod day09b;
 pub(crate) mod day10a;
 pub(crate) mod day10b;
+pub(crate) mod day11a;
+pub(crate) mod day11b;
 pub mod file;
