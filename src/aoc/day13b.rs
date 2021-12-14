@@ -24,7 +24,7 @@ fn display(points: &HashSet<Point>) {
     let w = points.iter().map(|p| p.x).max().unwrap() + 1;
     let h = points.iter().map(|p| p.y).max().unwrap() + 1;
     let mut d = Vec::new();
-    for y in 0..h {
+    for _y in 0..h {
         d.push(vec![' '; w as usize])
     }
 
@@ -104,7 +104,7 @@ fn read_input(f: &Path) -> Sheet {
     let mut instr = Vec::new();
     for line in lines {
         let line = line.unwrap();
-        if (!line.is_empty()) {
+        if !line.is_empty() {
             match RE.captures(&line) {
                 Some(m) => {
                     let s1 = String::from(&m[1]).parse().unwrap();
