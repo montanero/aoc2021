@@ -54,6 +54,7 @@ impl Pos {
 struct Solver {
     levels: Vec<Vec<i8>>,
     distance: Vec<Vec<Option<u32>>>,
+    min_dist: u32,
     size: Pos,
 }
 
@@ -68,24 +69,57 @@ impl Solver {
             levels: levels,
             distance: distance,
             size: size,
+            min_dist: u32::MAX,
         }
     }
 
     fn calculate(&mut self) {
-        for d in 0..self.size.x {
+        let l0 = self.levels[self.size.y - 1][self.size.x - 1] as u32;
+        self.distance[self.size.y - 1][self.size.x - 1] = Some(l0);
+        self.min_dist = l0;
+        for x0 in (0..self.size.x - 1).rev() {
             let mut y = self.size.y;
-            for x in self.size.x - d - 1..self.size.x {
+            for x in (x0..self.size.x) {
                 y -= 1;
-                let pos = Pos { x, y };
-                let dist = self.calculate_distance(&pos);
-                self.distance[y][x] = Option::Some(dist);
+                self.calc_and_storr(x, y);
             }
         }
+        for y0 in (0..self.size.x - 1).rev() {
+            let mut x = 0;
+            for y in (0..y0 + 1).rev() {
+                self.calc_and_storr(x, y);
+                x += 1;
+            }
+        }
+    }
+
+    fn calc_and_storr(&mut self, x: usize, y: usize) {
+        let pos = Pos { x, y };
+        let dist = self.calculate_distance(&pos);
+        self.distance[y][x] = Option::Some(dist);
+        self.min_dist = self.minimum_distance();
     }
 
     fn calculate_distance(&self, now: &Pos) -> u32 {
         let mut visited: HashSet<Pos> = HashSet::new();
         self.get_path_from(now, 0, u32::MAX, &mut visited)
+    }
+
+    // minimum distance from any of the border fields of explored space
+    fn minimum_distance(&self) -> u32 {
+        let mut maxd = u32::MAX;
+        for line in &self.distance {
+            'inner: for o in line {
+                match o {
+                    None => {}
+                    Some(d) => {
+                        maxd = min(maxd, *d);
+                        break 'inner;
+                    }
+                }
+            }
+        }
+        maxd
     }
 
     fn get_path_from(
@@ -101,14 +135,14 @@ impl Solver {
             match self.distance[now.y][now.x] {
                 Some(d) => level + d,
                 None => {
+                    let newlevel = level + self.levels[now.y][now.x] as u32;
                     if visited.contains(now) {
                         u32::MAX
                     } else {
-                        let newlevel = level + self.levels[now.y][now.x] as u32;
-                        if newlevel + self.dist_to_endpos(now) as u32 >= bestlevel {
+                        if newlevel + self.min_dist > bestlevel {
                             u32::MAX
-                        } else if self.on_endpos(now) {
-                            newlevel
+                        //                        } else if self.on_endpos(now) {
+                        //                            newlevel
                         } else {
                             visited.insert((*now).clone());
                             let r = self.try_directions(now, newlevel, bestlevel, visited);
