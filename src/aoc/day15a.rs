@@ -79,7 +79,7 @@ impl Solver {
         self.min_dist = l0;
         for x0 in (0..self.size.x - 1).rev() {
             let mut y = self.size.y;
-            for x in (x0..self.size.x) {
+            for x in x0..self.size.x {
                 y -= 1;
                 self.calc_and_storr(x, y);
             }
