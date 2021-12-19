@@ -1,25 +1,6 @@
 use std::cmp::max;
-use std::collections::HashSet;
 
 use itertools::Itertools;
-
-fn get_velocities_x(xl: i32, xr: i32) -> Vec<(i32, i32)> {
-    let mut ret = Vec::new();
-    for vel in (1..xr + 1).rev() {
-        let mut v = vel;
-        let mut x = 0;
-        'i: for i in 1..1000 {
-            x += v;
-            v -= x.signum();
-            if x >= xl && x <= xr {
-                ret.push((i, vel))
-            } else if x > xr {
-                break 'i;
-            }
-        }
-    }
-    ret
-}
 
 fn get_velocities_y(yb: i32, yt: i32) -> Vec<(i32, i32, i32)> {
     let mut ret = Vec::new();
@@ -41,15 +22,8 @@ fn get_velocities_y(yb: i32, yt: i32) -> Vec<(i32, i32, i32)> {
     ret
 }
 
-fn result(x0: i32, x1: i32, y0: i32, y1: i32) -> i32 {
-    let vx = get_velocities_x(x0, x1);
+fn result(_x0: i32, _x1: i32, y0: i32, y1: i32) -> i32 {
     let vy = get_velocities_y(y0, y1);
-    let xiters: HashSet<i32> = vx.iter().map(|p| p.0).collect();
-    let ys: Vec<&(i32, i32, i32)> = vy
-        .iter()
-        .filter(|p| xiters.contains(&p.0.clone()))
-        .collect();
-
     let bla: Vec<_> = vy.iter().sorted_by(|a, b| b.2.cmp(&a.2)).collect();
     let res = bla[0].2;
     res
