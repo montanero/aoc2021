@@ -1,4 +1,4 @@
-pub(crate) mod day01a;
+/*pub(crate) mod day01a;
 pub(crate) mod day01b;
 pub(crate) mod day02a;
 pub(crate) mod day02b;
@@ -33,4 +33,9 @@ pub(crate) mod day17a;
 pub(crate) mod day17b;
 pub(crate) mod day18a;
 pub(crate) mod day18b;
+pub(crate) mod day19a;
+*/
+
+pub(crate) mod day20a;
+pub(crate) mod day20b;
 pub mod file;
