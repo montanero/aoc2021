@@ -94,7 +94,7 @@ mod test {
         }
         let result = inp.count_hashes();
         println!("result : {}", result);
-        assert_eq!(result, 5395);
+        assert_eq!(result, 17584);
     }
 
     #[test]
