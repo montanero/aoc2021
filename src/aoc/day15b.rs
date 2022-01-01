@@ -90,7 +90,9 @@ impl Solver {
     }
 
     fn calculate(&mut self) {
+        let mut counter = 0u32;
         loop {
+            counter += 1;
             let mut changed = false;
             for y in 0..self.size_y {
                 for x in 0..self.size_x {
@@ -101,6 +103,7 @@ impl Solver {
                 break;
             }
         }
+        println!("{} iterations", counter);
     }
 
     fn fix(&mut self, x: usize, y: usize) -> bool {
@@ -147,13 +150,13 @@ mod test {
     fn result() {
         let result = solve();
         println!("result : {}", result);
-        assert_eq!(result, 393);
+        assert_eq!(result, 2823);
     }
 
     #[test]
     fn result_sample() {
         let result = solve_file(&file::input("input15-sample.txt"));
         println!("result : {}", result);
-        assert_eq!(result, 2823);
+        assert_eq!(result, 315);
     }
 }
