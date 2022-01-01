@@ -1,5 +1,4 @@
 use std::cmp::min;
-use std::collections::HashSet;
 use std::path::Path;
 
 use crate::aoc::file;
@@ -12,185 +11,82 @@ fn solve_file(f: &Path) -> u32 {
     let levels = read_file(f);
     let mut solver = Solver::create(levels);
     solver.calculate();
-    solver.distance[0][0].unwrap() - solver.levels[0][0] as u32
-}
-
-#[derive(Hash, Eq, PartialEq, Clone)]
-struct Pos {
-    x: usize,
-    y: usize,
-}
-#[derive(Clone)]
-enum Dir {
-    R,
-    D,
-    L,
-    U,
-}
-
-impl Pos {
-    fn do_move(&self, d: &Dir) -> Pos {
-        match d {
-            Dir::R => Pos {
-                x: self.x + 1,
-                y: self.y,
-            },
-            Dir::D => Pos {
-                x: self.x,
-                y: self.y + 1,
-            },
-            Dir::L => Pos {
-                x: if self.x > 0 { self.x - 1 } else { usize::MAX },
-                y: self.y,
-            },
-            Dir::U => Pos {
-                x: self.x,
-                y: if self.y > 0 { self.y - 1 } else { usize::MAX },
-            },
-        }
-    }
+    solver.distance[solver.size_y - 1][solver.size_x - 1]
 }
 
 struct Solver {
     levels: Vec<Vec<i8>>,
-    distance: Vec<Vec<Option<u32>>>,
-    min_dist: u32,
-    size: Pos,
+    distance: Vec<Vec<u32>>,
+    size_x: usize,
+    size_y: usize,
 }
 
 impl Solver {
     fn create(levels: Vec<Vec<i8>>) -> Solver {
-        let size = Pos {
-            x: levels[0].len(),
-            y: levels.len(),
-        };
-        let distance = vec![vec![Option::None; size.x]; size.y];
+        let size_x = levels[0].len();
+        let size_y = levels.len();
+        let mut distance = vec![];
+        distance.push(Self::create_initial_line(&levels, 0, 0));
+        for y in 1..size_y {
+            distance.push(Self::create_initial_line(
+                &levels,
+                y,
+                distance[y - 1][0] + levels[y][0] as u32,
+            ));
+        }
         Solver {
             levels: levels,
             distance: distance,
-            size: size,
-            min_dist: u32::MAX,
+            size_x: size_x,
+            size_y: size_y,
         }
+    }
+
+    fn create_initial_line(levels: &Vec<Vec<i8>>, y: usize, left_value: u32) -> Vec<u32> {
+        let mut distline = vec![];
+        distline.push(left_value);
+        for x in 1..levels[y].len() {
+            distline.push(distline.last().unwrap() + levels[y][x] as u32)
+        }
+        distline
     }
 
     fn calculate(&mut self) {
-        let l0 = self.levels[self.size.y - 1][self.size.x - 1] as u32;
-        self.distance[self.size.y - 1][self.size.x - 1] = Some(l0);
-        self.min_dist = l0;
-        for x0 in (0..self.size.x - 1).rev() {
-            let mut y = self.size.y;
-            for x in x0..self.size.x {
-                y -= 1;
-                self.calc_and_storr(x, y);
-            }
-        }
-        for y0 in (0..self.size.x - 1).rev() {
-            let mut x = 0;
-            for y in (0..y0 + 1).rev() {
-                self.calc_and_storr(x, y);
-                x += 1;
-            }
-        }
-    }
-
-    fn calc_and_storr(&mut self, x: usize, y: usize) {
-        let pos = Pos { x, y };
-        let dist = self.calculate_distance(&pos);
-        self.distance[y][x] = Option::Some(dist);
-        self.min_dist = self.minimum_distance();
-    }
-
-    fn calculate_distance(&self, now: &Pos) -> u32 {
-        let mut visited: HashSet<Pos> = HashSet::new();
-        self.get_path_from(now, 0, u32::MAX, &mut visited)
-    }
-
-    // minimum distance from any of the border fields of explored space
-    fn minimum_distance(&self) -> u32 {
-        let mut maxd = u32::MAX;
-        for line in &self.distance {
-            'inner: for o in line {
-                match o {
-                    None => {}
-                    Some(d) => {
-                        maxd = min(maxd, *d);
-                        break 'inner;
-                    }
+        loop {
+            let mut changed = false;
+            for y in 0..self.size_y {
+                for x in 0..self.size_x {
+                    changed |= self.fix(x, y)
                 }
             }
+            if !changed {
+                break;
+            }
         }
-        maxd
     }
 
-    fn get_path_from(
-        &self,
-        now: &Pos,
-        level: u32,
-        bestlevel: u32,
-        visited: &mut HashSet<Pos>,
-    ) -> u32 {
-        if !self.on_board(now) {
-            u32::MAX
+    fn fix(&mut self, x: usize, y: usize) -> bool {
+        //let dirs: Vec<Dir> = vec![Dir::R, Dir::D, Dir::U, Dir::L];
+        let mut min_dist = self.distance[y][x];
+        let level = self.levels[y][x];
+        if x > 0 {
+            min_dist = min(min_dist, level as u32 + self.distance[y][x - 1])
+        }
+        if y > 0 {
+            min_dist = min(min_dist, level as u32 + self.distance[y - 1][x])
+        }
+        if y < self.size_y - 1 {
+            min_dist = min(min_dist, level as u32 + self.distance[y + 1][x])
+        }
+        if x < self.size_x - 1 {
+            min_dist = min(min_dist, level as u32 + self.distance[y][x + 1])
+        }
+        if min_dist < self.distance[y][x] {
+            self.distance[y][x] = min_dist;
+            true
         } else {
-            match self.distance[now.y][now.x] {
-                Some(d) => level + d,
-                None => {
-                    let newlevel = level + self.levels[now.y][now.x] as u32;
-                    if visited.contains(now) {
-                        u32::MAX
-                    } else {
-                        if newlevel + self.min_dist > bestlevel {
-                            u32::MAX
-                        //                        } else if self.on_endpos(now) {
-                        //                            newlevel
-                        } else {
-                            visited.insert((*now).clone());
-                            let r = self.try_directions(now, newlevel, bestlevel, visited);
-                            visited.remove(&now.clone());
-                            r
-                        }
-                    }
-                }
-            }
+            false
         }
-    }
-
-    fn try_directions(
-        &self,
-        now: &Pos,
-        level: u32,
-        bestlevel: u32,
-        visited: &mut HashSet<Pos>,
-    ) -> u32 {
-        let dirs: Vec<Dir> = vec![Dir::R, Dir::D, Dir::U, Dir::L];
-        let mut best = bestlevel;
-        for d in dirs {
-            let lr = self.try_directions_sub(now, level, best, visited, d);
-            best = min(best, lr);
-        }
-        best
-    }
-
-    fn try_directions_sub(
-        &self,
-        now: &Pos,
-        level: u32,
-        bestlevel: u32,
-        visited: &mut HashSet<Pos>,
-        d: Dir,
-    ) -> u32 {
-        let p = now.do_move(&d);
-        self.get_path_from(&p, level, bestlevel, visited)
-    }
-
-    fn on_board(&self, pos: &Pos) -> bool {
-        pos.x < self.size.x && pos.y < self.size.y
-    }
-    fn on_endpos(&self, pos: &Pos) -> bool {
-        pos.x == self.size.x - 1 && pos.y == self.size.y - 1
-    }
-    fn dist_to_endpos(&self, pos: &Pos) -> usize {
-        (self.size.x - 1) - pos.x + (self.size.y - 1) - pos.y
     }
 }
 
@@ -213,7 +109,7 @@ mod test {
     fn result() {
         let result = solve();
         println!("result : {}", result);
-        assert_eq!(result, 489);
+        assert_eq!(result, 393);
     }
 
     #[test]
