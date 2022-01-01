@@ -28,6 +28,7 @@ pub(crate) mod day14a;
 pub(crate) mod day14b;
 */
 pub(crate) mod day15a;
+pub(crate) mod day15b;
 /*
 pub(crate) mod day16a;
 pub(crate) mod day16b;
